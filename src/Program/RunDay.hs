@@ -4,6 +4,7 @@ module Program.RunDay (runDay, Day, Verbosity (Quiet, Timings, Verbose)) where
 
 import Control.Exception (SomeException, catch)
 import Control.Monad.Except
+import Program.FetchDay
 import Data.Attoparsec.Text
 import Data.Functor
 import Data.Text (pack)
@@ -24,13 +25,12 @@ runDay inputParser partA partB verbosity inputFile = do
     fileContents <-
       if inputFileExists
         then liftIO $ readFile inputFile
-        else
-          throwError $
-            unwords
-              [ "I couldn't read the input!",
-                "I was expecting it to be at",
-                inputFile
-              ]
+        else do
+            i <- getInput $ read $ Prelude.take 2 $ drop 9 inputFile
+            liftIO $ writeFile inputFile i
+            return i
+
+
     case parseOnly inputParser . pack $ fileContents of
       Left e -> throwError $ "Parser failed to read input. Error:\n" ++ e
       Right i -> do

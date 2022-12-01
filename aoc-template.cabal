@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 74a518596623333f54debbd08849a3f5a987e3c7d13d8b337ef10b1fc25ba29c
+-- hash: e17740a3179b66cf49a520af39714d244033203bdde4715b7517ac91a0981bd9
 
 name:           aoc-template
 version:        2022.0
@@ -52,6 +52,7 @@ library
       Days.Day24
       Days.Day25
       Program.Color
+      Program.FetchDay
       Program.RunDay
       Util.Pair
       Util.Parsers
@@ -64,12 +65,47 @@ library
       LambdaCase
       MultiWayIf
       RecordWildCards
-      OverloadedRecordDot
       OverloadedStrings
       GADTs
-      GHC2021
+      EmptyCase
+      PostfixOperators
+      TupleSections
+      ImportQualifiedPost
+      NamedFieldPuns
+      BangPatterns
+      BinaryLiterals
+      HexFloatLiterals
+      NumericUnderscores
+      GADTSyntax
+      RankNTypes
+      TypeApplications
+      PolyKinds
+      StandaloneKindSignatures
+      ExistentialQuantification
+      TypeOperators
+      ConstraintKinds
+      ExplicitForAll
+      KindSignatures
+      NamedWildCards
+      ScopedTypeVariables
+      FlexibleContexts
+      FlexibleInstances
+      MultiParamTypeClasses
+      ConstrainedClassMethods
+      InstanceSigs
+      TypeSynonymInstances
+      DeriveDataTypeable
+      DeriveFoldable
+      DeriveFunctor
+      DeriveTraversable
+      StandaloneDeriving
+      EmptyDataDeriving
+      DeriveLift
+      GeneralisedNewtypeDeriving
+      DeriveGeneric
   build-depends:
-      ansi-terminal
+      advent-of-code-api
+    , ansi-terminal
     , attoparsec
     , base >=4.7 && <5
     , containers
@@ -77,6 +113,8 @@ library
     , mtl
     , optparse-applicative
     , parser-combinators
+    , recursion-schemes
+    , servant-client
     , text
     , time
     , vector
@@ -92,13 +130,48 @@ executable aoc-template-exe
       LambdaCase
       MultiWayIf
       RecordWildCards
-      OverloadedRecordDot
       OverloadedStrings
       GADTs
-      GHC2021
+      EmptyCase
+      PostfixOperators
+      TupleSections
+      ImportQualifiedPost
+      NamedFieldPuns
+      BangPatterns
+      BinaryLiterals
+      HexFloatLiterals
+      NumericUnderscores
+      GADTSyntax
+      RankNTypes
+      TypeApplications
+      PolyKinds
+      StandaloneKindSignatures
+      ExistentialQuantification
+      TypeOperators
+      ConstraintKinds
+      ExplicitForAll
+      KindSignatures
+      NamedWildCards
+      ScopedTypeVariables
+      FlexibleContexts
+      FlexibleInstances
+      MultiParamTypeClasses
+      ConstrainedClassMethods
+      InstanceSigs
+      TypeSynonymInstances
+      DeriveDataTypeable
+      DeriveFoldable
+      DeriveFunctor
+      DeriveTraversable
+      StandaloneDeriving
+      EmptyDataDeriving
+      DeriveLift
+      GeneralisedNewtypeDeriving
+      DeriveGeneric
   ghc-options: -threaded -rtsopts -with-rtsopts=-N4 -with-rtsopts=-qa -with-rtsopts=-C0 -funfolding-use-threshold=16 -fexcess-precision -optc-O3 -optc-ffast-math -O2
   build-depends:
-      ansi-terminal
+      advent-of-code-api
+    , ansi-terminal
     , aoc-template
     , attoparsec
     , base >=4.7 && <5
@@ -107,6 +180,8 @@ executable aoc-template-exe
     , mtl
     , optparse-applicative
     , parser-combinators
+    , recursion-schemes
+    , servant-client
     , text
     , time
     , vector

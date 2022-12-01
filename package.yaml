@@ -30,6 +30,9 @@ dependencies:
 - text
 - mtl
 - vector
+- recursion-schemes
+- servant-client
+- advent-of-code-api
 
 library:
   source-dirs: src
@@ -37,10 +40,44 @@ library:
     - LambdaCase
     - MultiWayIf
     - RecordWildCards
-    - OverloadedRecordDot
     - OverloadedStrings
     - GADTs
-    - GHC2021
+    - EmptyCase
+    - PostfixOperators
+    - TupleSections
+    - ImportQualifiedPost
+    - NamedFieldPuns
+    - BangPatterns
+    - BinaryLiterals
+    - HexFloatLiterals
+    - NumericUnderscores
+    - GADTSyntax
+    - RankNTypes
+    - TypeApplications
+    - PolyKinds
+    - StandaloneKindSignatures
+    - ExistentialQuantification
+    - TypeOperators
+    - ConstraintKinds
+    - ExplicitForAll
+    - KindSignatures
+    - NamedWildCards
+    - ScopedTypeVariables
+    - FlexibleContexts
+    - FlexibleInstances
+    - MultiParamTypeClasses
+    - ConstrainedClassMethods
+    - InstanceSigs
+    - TypeSynonymInstances
+    - DeriveDataTypeable
+    - DeriveFoldable
+    - DeriveFunctor
+    - DeriveTraversable
+    - StandaloneDeriving
+    - EmptyDataDeriving
+    - DeriveLift
+    - GeneralisedNewtypeDeriving
+    - DeriveGeneric
 
 executables:
   aoc-template-exe:
@@ -61,9 +98,43 @@ executables:
     - LambdaCase
     - MultiWayIf
     - RecordWildCards
-    - OverloadedRecordDot
     - OverloadedStrings
     - GADTs
-    - GHC2021
+    - EmptyCase
+    - PostfixOperators
+    - TupleSections
+    - ImportQualifiedPost
+    - NamedFieldPuns
+    - BangPatterns
+    - BinaryLiterals
+    - HexFloatLiterals
+    - NumericUnderscores
+    - GADTSyntax
+    - RankNTypes
+    - TypeApplications
+    - PolyKinds
+    - StandaloneKindSignatures
+    - ExistentialQuantification
+    - TypeOperators
+    - ConstraintKinds
+    - ExplicitForAll
+    - KindSignatures
+    - NamedWildCards
+    - ScopedTypeVariables
+    - FlexibleContexts
+    - FlexibleInstances
+    - MultiParamTypeClasses
+    - ConstrainedClassMethods
+    - InstanceSigs
+    - TypeSynonymInstances
+    - DeriveDataTypeable
+    - DeriveFoldable
+    - DeriveFunctor
+    - DeriveTraversable
+    - StandaloneDeriving
+    - EmptyDataDeriving
+    - DeriveLift
+    - GeneralisedNewtypeDeriving
+    - DeriveGeneric
     dependencies:
     - aoc-template
