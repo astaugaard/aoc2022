@@ -2,6 +2,7 @@
 To auto fetch puzzle inputs you have to modify the file titled options to have options specified AND NOTHING ELSE.
 The code for fetching the puzzle inputs automatically is pretty hacky and I wouldn't be surprised if there is an error in it.
 
+uses: https://hackage.haskell.org/package/advent-of-code-api 
 
 # aoc-template
 This is an (opinionated) Advent of Code template for solutions in Haskell.
