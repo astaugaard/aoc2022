@@ -14,6 +14,7 @@ import qualified Util.Util as U
 import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
 import Data.Void
+import Debug.Trace
 {- ORMOLU_ENABLE -}
 
 runDay :: R.Day
@@ -21,19 +22,22 @@ runDay = R.runDay inputParser partA partB
 
 ------------ PARSER ------------
 inputParser :: Parser Input
-inputParser = error "Not implemented yet!"
+inputParser = sepBy elf (char '\n' <* char '\n')
+
+elf :: Parser [Int]
+elf = sepBy ((\x -> trace x $ read x) <$> many1 digit) (char '\n')
 
 ------------ TYPES ------------
-type Input = Void
+type Input = [[Int]]
 
-type OutputA = Void
+type OutputA = Int
 
-type OutputB = Void
+type OutputB = Int
 
 ------------ PART A ------------
 partA :: Input -> OutputA
-partA = error "Not implemented yet!"
+partA i = maximum $ map sum i
 
 ------------ PART B ------------
 partB :: Input -> OutputB
-partB = error "Not implemented yet!"
+partB = sum . Data.List.take 3 . reverse . sort . map sum
