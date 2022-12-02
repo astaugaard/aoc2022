@@ -10,7 +10,7 @@ getInput n = do
   opts <- liftIO $ readFile "options"
   case Prelude.lines opts of
     (year : session : _) -> do
-      r <- liftIO $ runAoC (AoCOpts session (read year) (Just "cache") False 3000000) $ AoCInput (mkDay_ (toEnum n))
+      r <- liftIO $ runAoC (AoCOpts session (read year) (Just "cache") False 3000000 "github.com/astaugaard/aoc-template by astaugaard@icloud.com - I hope I did this right" ) $ AoCInput (mkDay_ (toEnum n))
       case r of
         Left e -> throwError $ show e
         Right a -> return $ unpack a
