@@ -13,7 +13,9 @@ import qualified Util.Util as U
 
 import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
+import Control.Applicative
 import Data.Void
+import Data.Functor
 {- ORMOLU_ENABLE -}
 
 runDay :: R.Day
@@ -21,19 +23,70 @@ runDay = R.runDay inputParser partA partB
 
 ------------ PARSER ------------
 inputParser :: Parser Input
-inputParser = error "Not implemented yet!"
+inputParser = sepBy1 game $ char '\n'
+
+game :: Parser (Move, Move)
+game = (,) <$> ((char 'A' $> Rock) <|> (char 'B' $> Paper) <|> char 'C' $> Scissors) <*> (char ' ' *> ((char 'X' $> Rock) <|> (char 'Y' $> Paper) <|> (char 'Z' $> Scissors)))
 
 ------------ TYPES ------------
-type Input = Void
+data Move = Rock | Paper | Scissors deriving (Show, Eq)
 
-type OutputA = Void
+type Input = [(Move, Move)]
 
-type OutputB = Void
+type OutputA = Int
+
+type OutputB = Int
 
 ------------ PART A ------------
+
+value :: Move -> Int
+value Rock = 1
+value Paper = 2
+value Scissors = 3
+
+result :: Move -> Move -> Int -- returns the result for second move (the points)
+result mo mo'
+  | diff == 0 = 3
+  | diff == 1 = 0
+  | diff == 2 = 6
+  | diff == (-1) = 6
+  | diff == (-2) = 0
+  | otherwise = error "error"
+  where
+    diff = value mo - value mo'
+
 partA :: Input -> OutputA
-partA = error "Not implemented yet!"
+partA = sum . map (\(a, b) -> result a b + value b)
 
 ------------ PART B ------------
+
+toWin :: Move -> Move
+toWin Rock = Paper
+toWin Paper = Scissors
+toWin Scissors = Rock
+
+toLose :: Move -> Move
+toLose Rock = Scissors
+toLose Paper = Rock
+toLose Scissors = Paper
+
+toTie :: Move -> Move
+toTie = id
+
 partB :: Input -> OutputB
-partB = error "Not implemented yet!"
+partB =
+  sum
+    . map
+      ( \(a, b) ->
+          ( case b of
+              Rock -> 0
+              Paper -> 3
+              Scissors -> 6
+          )
+            + value
+              ( case b of
+                  Rock -> toLose a
+                  Paper -> toTie a
+                  Scissors -> toWin a
+              )
+      )
