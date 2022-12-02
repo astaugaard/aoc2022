@@ -30,12 +30,12 @@ resolver: lts-19.33
 #   - wai
 packages:
   - .
-  - advent-of-code-api
 # Dependency packages to be pulled from upstream that are not in the resolver.
 # These entries can reference officially published versions as well as
 # forks / in-progress versions pinned to a git hash. For example:
 #
-# extra-deps:
+extra-deps:
+  - url: "https://github.com/astaugaard/advent-of-code-api/archive/refs/heads/master.zip"
 # - acme-missiles-0.3
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
