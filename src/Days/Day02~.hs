@@ -13,14 +13,13 @@ import qualified Util.Util as U
 
 import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
-import Data.Void
-import Test.HUnit
-import Data.Functor (($>))
 import Control.Applicative
+import Data.Void
+import Data.Functor
 {- ORMOLU_ENABLE -}
 
 runDay :: R.Day
-runDay = R.runDay inputParser partA partB tests
+runDay = R.runDay inputParser partA partB
 
 ------------ PARSER ------------
 inputParser :: Parser Input
@@ -91,7 +90,3 @@ partB =
                   Scissors -> toWin a
               )
       )
-
------------- Tests  ------------
-tests :: Test
-tests = TestList []
