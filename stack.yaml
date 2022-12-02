@@ -28,14 +28,21 @@ resolver: lts-19.33
 #   subdirs:
 #   - auto-update
 #   - wai
+
 packages:
-  - .
+- .
+# - location:
+#     git: https://github.com/astaugaard/advent-of-code-api
+#     commit: 6f652862b2552a4c31d30f1261dffa00969ae7a9
+#   extra-dep: true
+
 # Dependency packages to be pulled from upstream that are not in the resolver.
 # These entries can reference officially published versions as well as
 # forks / in-progress versions pinned to a git hash. For example:
 #
 extra-deps:
-  - url: "https://github.com/astaugaard/advent-of-code-api/archive/refs/heads/master.zip"
+- git: https://github.com/astaugaard/advent-of-code-api
+  commit: 6f652862b2552a4c31d30f1261dffa00969ae7a9 # https://github.com/astaugaard/advent-of-code-api/archive/refs/heads/master.zip
 # - acme-missiles-0.3
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
