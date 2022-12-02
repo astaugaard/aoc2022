@@ -14,10 +14,11 @@ import qualified Util.Util as U
 import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
 import Data.Void
+import Test.HUnit
 {- ORMOLU_ENABLE -}
 
 runDay :: R.Day
-runDay = R.runDay inputParser partA partB
+runDay = R.runDay inputParser partA partB tests
 
 ------------ PARSER ------------
 inputParser :: Parser Input
@@ -37,3 +38,8 @@ partA = error "Not implemented yet!"
 ------------ PART B ------------
 partB :: Input -> OutputB
 partB = error "Not implemented yet!"
+
+
+------------ Tests  ------------
+tests :: Test
+tests = TestList []

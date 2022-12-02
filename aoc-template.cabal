@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e17740a3179b66cf49a520af39714d244033203bdde4715b7517ac91a0981bd9
+-- hash: 5ca759444858d1b247d492ae03e7759c5db5c4af5e275d4ab6c1da5d7d89c6e0
 
 name:           aoc-template
 version:        2022.0
@@ -104,7 +104,8 @@ library
       GeneralisedNewtypeDeriving
       DeriveGeneric
   build-depends:
-      advent-of-code-api
+      HUnit
+    , advent-of-code-api
     , ansi-terminal
     , attoparsec
     , base >=4.7 && <5
@@ -170,7 +171,8 @@ executable aoc-template-exe
       DeriveGeneric
   ghc-options: -threaded -rtsopts -with-rtsopts=-N4 -with-rtsopts=-qa -with-rtsopts=-C0 -funfolding-use-threshold=16 -fexcess-precision -optc-O3 -optc-ffast-math -O2
   build-depends:
-      advent-of-code-api
+      HUnit
+    , advent-of-code-api
     , ansi-terminal
     , aoc-template
     , attoparsec

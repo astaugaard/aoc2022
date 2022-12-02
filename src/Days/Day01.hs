@@ -14,18 +14,18 @@ import qualified Util.Util as U
 import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
 import Data.Void
-import Debug.Trace
+import Test.HUnit
 {- ORMOLU_ENABLE -}
 
 runDay :: R.Day
-runDay = R.runDay inputParser partA partB
+runDay = R.runDay inputParser partA partB tests
 
 ------------ PARSER ------------
 inputParser :: Parser Input
 inputParser = sepBy elf (char '\n' <* char '\n')
 
 elf :: Parser [Int]
-elf = sepBy ((\x -> trace x $ read x) <$> many1 digit) (char '\n')
+elf = sepBy (read <$> many1 digit) (char '\n')
 
 ------------ TYPES ------------
 type Input = [[Int]]
@@ -41,3 +41,8 @@ partA i = maximum $ map sum i
 ------------ PART B ------------
 partB :: Input -> OutputB
 partB = sum . Data.List.take 3 . reverse . sort . map sum
+
+
+------------ Tests  ------------
+tests :: Test
+tests = TestList []

@@ -13,13 +13,14 @@ import Program.Color
 import System.Console.ANSI
 import System.Directory (doesFileExist)
 import Text.Printf
+import Test.HUnit
 
 data Verbosity = Quiet | Timings | Verbose deriving (Eq, Show, Ord)
 
 type Day = Verbosity -> String -> IO (Maybe Double, Maybe Double)
 
-runDay :: (Show a, Show b, Show i) => Parser i -> (i -> a) -> (i -> b) -> Program.RunDay.Day
-runDay inputParser partA partB verbosity inputFile = do
+runDay :: (Show a, Show b, Show i) => Parser i -> (i -> a) -> (i -> b) -> Test -> Program.RunDay.Day
+runDay inputParser partA partB tests verbosity inputFile  = do
   input <- runExceptT $ do
     inputFileExists <- liftIO $ doesFileExist inputFile
     fileContents <-
@@ -39,33 +40,39 @@ runDay inputParser partA partB verbosity inputFile = do
           liftIO $ print i
         return i
 
-  case input of
-    Left x -> withColor Red (putStrLn x) >> return (Nothing, Nothing)
-    Right i -> do
-      withColor Blue $ putStrLn "Part A:"
-      time1 <- getCurrentTime
-      successA <- catch (print (partA i) $> True) $
-        \(m :: SomeException) -> withColor Red $ do
-          putStrLn "Couldn't run Part A!"
-          when (verbosity == Verbose) $ print m
-          return False
-      time2 <- getCurrentTime
+  counts <- runTestTT tests
 
-      let timeA = realToFrac $ diffUTCTime time2 time1
-      when (verbosity >= Timings && successA) $ putStrLn $ printf "(%.2f)" timeA
+  case counts of
+      Counts _ _ 0 0 ->
+          case input of
+            Left x -> withColor Red (putStrLn x) >> return (Nothing, Nothing)
+            Right i -> do
+              withColor Blue $ putStrLn "Part A:"
+              time1 <- getCurrentTime
+              successA <- catch (print (partA i) $> True) $
+                \(m :: SomeException) -> withColor Red $ do
+                  putStrLn "Couldn't run Part A!"
+                  when (verbosity == Verbose) $ print m
+                  return False
+              time2 <- getCurrentTime
 
-      withColor Blue $ putStrLn "Part B:"
-      successB <- catch (print (partB i) $> True) $
-        \(m :: SomeException) -> withColor Red $ do
-          putStrLn "Couldn't run Part B!"
-          when (verbosity == Verbose) $ print m
-          return False
-      time3 <- getCurrentTime
+              let timeA = realToFrac $ diffUTCTime time2 time1
+              when (verbosity >= Timings && successA) $ putStrLn $ printf "(%.2f)" timeA
 
-      let timeB = realToFrac $ diffUTCTime time3 time2
-      when (verbosity >= Timings && successB) $ putStrLn $ printf "(%.2f)" timeB
+              withColor Blue $ putStrLn "Part B:"
+              successB <- catch (print (partB i) $> True) $
+                \(m :: SomeException) -> withColor Red $ do
+                  putStrLn "Couldn't run Part B!"
+                  when (verbosity == Verbose) $ print m
+                  return False
+              time3 <- getCurrentTime
 
-      return $
-        (,)
-          (if successA then Just timeA else Nothing)
-          (if successB then Just timeB else Nothing)
+              let timeB = realToFrac $ diffUTCTime time3 time2
+              when (verbosity >= Timings && successB) $ putStrLn $ printf "(%.2f)" timeB
+
+              return $
+                (,)
+                  (if successA then Just timeA else Nothing)
+                  (if successB then Just timeB else Nothing)
+      _ -> withColor Red $ putStrLn "test cases failed" >> pure (Nothing,Nothing)
+

@@ -33,6 +33,7 @@ dependencies:
 - recursion-schemes
 - servant-client
 - advent-of-code-api
+- HUnit
 
 library:
   source-dirs: src
