@@ -15,6 +15,7 @@ import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
 import Data.Void
 import Test.HUnit
+import Data.Ord
 {- ORMOLU_ENABLE -}
 
 runDay :: R.Day
@@ -40,7 +41,7 @@ partA i = maximum $ map sum i
 
 ------------ PART B ------------
 partB :: Input -> OutputB
-partB = sum . Data.List.take 3 . reverse . sort . map sum
+partB = sum . Data.List.take 3 . map getDown . sort . map (Down . sum)
 
 
 ------------ Tests  ------------

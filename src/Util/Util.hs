@@ -4,6 +4,9 @@ module Util.Util where
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 import Debug.Trace (trace)
+import Test.HUnit
+import Data.Attoparsec.Text (IResult(..), parse, Parser, parseOnly)
+import Data.Text (pack)
 {- ORMOLU_ENABLE -}
 
 {-
@@ -73,3 +76,11 @@ mapBoundingBox m =
     (maximum . fmap fst . Map.keys $ m)
     (minimum . fmap snd . Map.keys $ m)
     (maximum . fmap snd . Map.keys $ m)
+
+inputTest :: (Eq b, Show b) => Parser a -> (a -> b) -> String -> b -> Assertion
+inputTest pa fab s b = let po = parseOnly pa (pack s)
+                       in case po of
+                            Left a -> assertFailure a
+                            Right a -> assertEqual "results equal: " (fab a) b
+                            -- Fail _ cont mes -> assertFailure (unlines cont ++ "\n" ++ mes)
+
