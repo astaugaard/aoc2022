@@ -40,8 +40,11 @@ partA :: Input -> OutputA
 partA i = maximum $ map sum i
 
 ------------ PART B ------------
+sortDes :: Ord a => [a] -> [a]
+sortDes = map getDown . sort . map Down
+
 partB :: Input -> OutputB
-partB = sum . Data.List.take 3 . map getDown . sort . map (Down . sum)
+partB = sum . Data.List.take 3 . sortDes . map sum
 
 
 ------------ Tests  ------------

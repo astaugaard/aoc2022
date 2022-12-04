@@ -25,10 +25,10 @@ runDay = R.runDay inputParser partA partB tests
 
 ------------ PARSER ------------
 inputParser :: Parser Input
-inputParser = many' ((\l -> let (a,b) = splitAt ((length l + 1) `div` 2) l in (Set.fromList a,Set.fromList b)) <$> many' (satisfy (/='\n')) <* char '\n')
+inputParser = many' ((\l -> let (a, b) = splitAt ((length l + 1) `div` 2) l in (Set.fromList a, Set.fromList b)) <$> many' (satisfy (/= '\n')) <* char '\n')
 
 ------------ TYPES ------------
-type Input = [(Set Char,Set Char)]
+type Input = [(Set Char, Set Char)]
 
 type OutputA = Int
 
@@ -36,21 +36,30 @@ type OutputB = Int
 
 ------------ PART A ------------
 
-weight = (\c -> if isUpper c then ord c - ord 'A' + 27 else ord c - ord 'a' + 1)
+weight c = if isUpper c then ord c - ord 'A' + 27 else ord c - ord 'a' + 1
 
 partA :: Input -> OutputA
-
-partA = sum . map (\(a,b) -> sum $ map weight $ Set.toList $ Set.intersection a b)
+partA = sum . map (sum . map weight . Set.toList . uncurry Set.intersection)
 
 ------------ PART B ------------
 partB :: Input -> OutputB
-partB = sum . concatMap (\l -> map weight . Set.toList . foldl1 Set.intersection $ map (\(a,b) -> Set.union a b) l) . U.chunksOf 3
-
+partB =
+  sum
+    . concatMap
+      ( map weight
+          . Set.toList
+          . foldl1 Set.intersection
+          . map (uncurry Set.union)
+      )
+    . U.chunksOf 3
 
 ------------ Tests  ------------
 
 testInput = "vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\nPmmdzqPrVvPwwTWBwg\nwMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\nttgJtRGJQctTZtZT\nCrZsJsPPZsGzwwsLwLmpwMDw\n"
 
 tests :: Test
-tests = TestList ["part a test" ~: TestCase (inputTest inputParser partA testInput 157),
-                  "partb test" ~: TestCase (inputTest inputParser partB testInput 70)]
+tests =
+  TestList
+    [ "part a test" ~: TestCase (inputTest inputParser partA testInput 157),
+      "partb test" ~: TestCase (inputTest inputParser partB testInput 70)
+    ]
