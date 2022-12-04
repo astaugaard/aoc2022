@@ -47,7 +47,7 @@ value Scissors = 3
 
 result :: Move -> Move -> Int -- returns the result for second move (the points)
 result mo mo'
-  | diff == 0 = 3
+  | diff == 0 = 3 -- yep this is a mess I don't know if this was worth it just to avoid a case statement...
   | diff == 1 = 0
   | diff == 2 = 6
   | diff == (-1) = 6
