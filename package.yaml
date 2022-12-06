@@ -29,6 +29,7 @@ dependencies:
 - containers
 - text
 - mtl
+- comonad
 - vector
 - recursion-schemes
 - servant-client
