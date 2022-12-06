@@ -71,5 +71,6 @@ require-stack-version: ">=2.5"
 #
 # Allow a newer minor version of GHC than the snapshot specifies
 # compiler-check: newer-minor
-# nix:
-#     enable: true
+nix:
+    enable: true
+    packages: [zlib]

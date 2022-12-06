@@ -1,5 +1,6 @@
-module Days.Day06 (runDay) where
 
+module Days.Day06 (runDay) where
+        
 {- ORMOLU_DISABLE -}
 import Data.List
 import Data.Map.Strict (Map)
@@ -15,6 +16,13 @@ import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
 import Data.Void
 import Test.HUnit
+
+
+
+
+
+import qualified Data.List.NonEmpty as N
+import Control.Comonad
 {- ORMOLU_ENABLE -}
 
 runDay :: R.Day
@@ -22,24 +30,32 @@ runDay = R.runDay inputParser partA partB tests
 
 ------------ PARSER ------------
 inputParser :: Parser Input
-inputParser = error "Not implemented yet!"
+inputParser = (N.:|) <$> anyChar <*> many' anyChar
 
 ------------ TYPES ------------
-type Input = Void
+type Input = N.NonEmpty Char
 
-type OutputA = Void
+type OutputA = Int
 
-type OutputB = Void
+type OutputB = Int
 
 ------------ PART A ------------
+
+firstNDifferent :: Eq a => Int -> N.NonEmpty a -> Bool
+firstNDifferent n non = (length $ nub $ N.take n non) == n
+
+first4Different :: Eq a => N.NonEmpty a -> Bool
+first4Different = firstNDifferent 4
+
 partA :: Input -> OutputA
-partA = error "Not implemented yet!"
+partA = (+4) . length . N.takeWhile not . extend first4Different
 
 ------------ PART B ------------
 partB :: Input -> OutputB
-partB = error "Not implemented yet!"
-
+partB = (+14) . length . N.takeWhile not . extend (firstNDifferent 14)
 
 ------------ Tests  ------------
+testInputs = ["mjqjpqmgbljsphdztnvjfqwrcgsmlb","bvwbjplbgvbhsrlpgdmjqwftvncz","nppdvjthqldpwncqszvftbrmjlhg","nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg","zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"]
+
 tests :: Test
-tests = TestList []
+tests = TestList $ zipWith (\t v -> TestCase $ U.inputTest inputParser partA t v) testInputs [7,5,6,10,11] ++ zipWith (\t v -> TestCase $ U.inputTest inputParser partB t v) testInputs [19,23,23,29,26]
