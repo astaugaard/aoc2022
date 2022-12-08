@@ -23,82 +23,103 @@ import Control.Applicative
 import Control.Monad.State
 import Data.Bifunctor
 import Data.Either
-import Debug.Trace
+import qualified Data.Foldable as F
 {- ORMOLU_ENABLE -}
 
+-- version without any recursion in commit before this one
 
+data DirectoryTree = Dir (Map String DirectoryTree) | File Int deriving Show
+
+makeBaseFunctor ''DirectoryTree
 
 ------------ PARSER ------------
-inputParser :: Parser Input  -- yeah it would have been way easier to just use recursion in the parser to parse the thing into a tree
-inputParser = many1 instr
+collapseTrees :: [Map String DirectoryTree] -> DirectoryTree
+collapseTrees ds = ana go $ Left ds
+  where
+    go ::
+         Either ([Map String DirectoryTree]) Int
+      -> DirectoryTreeF (Either ([Map String DirectoryTree]) Int)
+    go (Right size) = FileF size
+    go (Left trees) = DirF $ Map.unionsWith merge $ fmap (fmap conv) trees
+      where
+        conv (Dir t) = Left $ pure t
+        conv (File size) = Right size
+        merge (Left a) (Left b) = Left $ a ++ b
+        merge (Right a) (Right _) = (Right a)
+        merge a _ = error "a" -- should not happen
 
-instr :: Parser Instr
-instr =
-  (string "$ cd ..\n" $> GoUp) <|>
-  (string "$ cd " *> (CD <$> many1 (satisfy (/= '\n'))) <* char '\n') <|>
-  (Ls <$>
-   (string "$ ls\n" *>
-    many'
-      (((\s n -> Left (n,(read s))) <$> (many1 digit <* char ' ') <*> (many1 (satisfy (/='\n')) <* char '\n')) <|>
-       (string "dir " *> (Right <$> (many1 (satisfy (/= '\n')))) <* char '\n'))))
+inputParser :: Parser Input
+inputParser =
+  collapseTrees . map Map.fromList <$> (string "$ cd /\n" *> many1 subTree) -- yeah it would have been way easier to just use recursion in the parser to parse the thing into a tree
+
+notNewline :: Parser Char
+notNewline = satisfy (/= '\n')
+
+subTree :: Parser [(String, DirectoryTree)]
+subTree =
+  (string "$ ls\n" *> many subThings) <|>
+  (\n s -> pure (n, (collapseTrees $ map Map.fromList s))) <$>
+  (string "$ cd " *>
+   (many1 notNewline >>= \i ->
+      if i == ".."
+        then fail "can't be up up"
+        else pure i) <*
+   char '\n') <*>
+  (many' subTree <* option () (string "$ cd ..\n" $> ()))
+
+subThings :: Parser (String, DirectoryTree)
+subThings =
+  (\s n -> (n, File (read s))) <$> many1 digit <*>
+  (char ' ' *> many1 notNewline <* char '\n') <|>
+  (\n -> (n, Dir (Map.empty))) <$>
+  (string "dir " *> many1 notNewline <* char '\n')
 
 ------------ TYPES ------------
-type Input = [Instr] 
-
-data Instr = GoUp | CD String | Ls [Either (String,Int) String] deriving Show
+type Input = DirectoryTree
 
 type OutputA = Int
 
 type OutputB = Int
 
-data DirectoryTree = DirDT String [DirectoryTree] | FileDT String Int
-
-makeBaseFunctor ''DirectoryTree
-
-type DirTree2 = Map Path Loc
-
-data Loc = File Int | Dir [String] deriving Show
-
-type Path = [String]
-
 ------------ PART A ------------
 partA :: Input -> OutputA
-partA i = snd $ hylo collapse buildTree $ (["/"],) $ snd $ execState (mapM executeInstr i) ([],Map.singleton ["/"] (Dir []))
+partA = withSize collapse
 
-buildTree :: (Path,DirTree2) -> DirectoryTreeF (Path,DirTree2)
-buildTree (p,t) = case t Map.! p of
-                    File size -> FileDTF (head p) size
-                    Dir sub -> DirDTF (head p) $ map (\n -> (n:p,t)) sub
+withSize :: (Int -> DirectoryTreeF a -> a) -> DirectoryTree -> a
+withSize f t = gcata distrib (\a -> f (sum (fmap fst a)) $ fmap snd a) t
+  where
+    distrib :: forall b. DirectoryTreeF (Int, b) -> (Int, DirectoryTreeF b)
+    distrib (FileF i) = (i, FileF i)
+    distrib (DirF sub) = (total, DirF $ fmap snd sub)
+      where
+        total = sum $ fmap fst $ sub
 
-collapse :: DirectoryTreeF (Int,Int) -> (Int,Int)
-collapse (FileDTF _ s) = (s,0)
-collapse (DirDTF _ subs) = (size, if size <= 100000 then acc + size else acc)
-    where size = sum $ map fst subs
-          acc = sum $ map snd subs
-
-executeInstr :: Instr -> State (Path,DirTree2) ()
-executeInstr GoUp = modify (first tail)
-executeInstr (CD n) = modify (first (n:))
-executeInstr (Ls d) = do p <- gets fst
-                         modify $ second $ (\a -> foldl' (\m (n,s) -> Map.insert (n:p) (File s) m) (Map.insert p (Dir names) a) files)
-    where files :: [(String,Int)]
-          (files,subDirs) = partitionEithers d
-          names = map fst files ++ subDirs
+collapse :: Int -> DirectoryTreeF Int -> Int
+collapse _ (FileF _) = 0
+collapse size (DirF subs) =
+  if size <= 100000
+    then acc + size
+    else acc
+  where
+    acc = sum subs
 
 ------------ PART B ------------
 partB :: Input -> OutputB
-partB i = fromJust $ fst $ cata minSized dirTree
-    where sizeUsed = fst $ cata collapse dirTree
-          minSize = 30000000 - 70000000 + sizeUsed
-          dirTree :: DirectoryTree
-          dirTree = ana buildTree $ (["/"],) $ snd $ execState (mapM executeInstr i) ([],Map.singleton ["/"] (Dir []))
-          -- could have represented this better (in the type)
-          minSized :: DirectoryTreeF (Maybe Int,Int) -> (Maybe Int,Int)
-          minSized (FileDTF _ s) = (Nothing,s)
-          minSized (DirDTF _ subs) = if not $ null foundDirs then (Just $ minimum foundDirs, totalSize) else if totalSize > minSize then (Just totalSize,totalSize) else (Nothing,totalSize)
-            where foundDirs = catMaybes $ map fst subs
-                  totalSize = sum $ map snd subs
-
+partB i = minimum $ withSize validRemovals i
+  where
+    sizeUsed = withSize (\size _ -> size) i
+    minSize = 30000000 - 70000000 + sizeUsed
+    validRemovals :: Int -> DirectoryTreeF [Int] -> [Int]
+    validRemovals size (DirF subs) =
+      case valids of
+        [] ->
+          if size > minSize
+            then [size]
+            else []
+        (_:_) -> valids
+      where
+        valids = concat $ F.toList subs
+    validRemovals _ _ = []
 ------------ Tests  ------------
 
 
