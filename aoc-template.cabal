@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ed05d8ffa1d37824e4f4332327f7d8ad23261ef081908e3b6f793afaa7ec5a15
+-- hash: ec0fb64731b6d4b941030efd0a77e322a9fd282381f9bedf98b1809451848130
 
 name:           aoc-template
 version:        2022.0
@@ -104,12 +104,15 @@ library
       GeneralisedNewtypeDeriving
       DeriveGeneric
   build-depends:
-      HUnit
+      ComonadSheet
+    , HUnit
     , advent-of-code-api
     , ansi-terminal
+    , array
     , attoparsec
     , base >=4.7 && <5
     , comonad
+    , comonad-extras
     , containers
     , directory
     , mtl
@@ -172,13 +175,16 @@ executable aoc-template-exe
       DeriveGeneric
   ghc-options: -threaded -rtsopts -with-rtsopts=-N4 -with-rtsopts=-qa -with-rtsopts=-C0 -funfolding-use-threshold=16 -fexcess-precision -optc-O3 -optc-ffast-math -O2
   build-depends:
-      HUnit
+      ComonadSheet
+    , HUnit
     , advent-of-code-api
     , ansi-terminal
     , aoc-template
+    , array
     , attoparsec
     , base >=4.7 && <5
     , comonad
+    , comonad-extras
     , containers
     , directory
     , mtl
