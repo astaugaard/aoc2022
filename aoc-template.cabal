@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ec0fb64731b6d4b941030efd0a77e322a9fd282381f9bedf98b1809451848130
+-- hash: da465391cb9ce215bb1125ce05c214d4aa1f44518f04f220eb132015239b8f84
 
 name:           aoc-template
 version:        2022.0
@@ -114,12 +114,15 @@ library
     , comonad
     , comonad-extras
     , containers
+    , deepseq
     , directory
+    , microlens-platform
     , mtl
     , optparse-applicative
     , parser-combinators
     , recursion-schemes
     , servant-client
+    , split
     , text
     , time
     , vector
@@ -186,12 +189,15 @@ executable aoc-template-exe
     , comonad
     , comonad-extras
     , containers
+    , deepseq
     , directory
+    , microlens-platform
     , mtl
     , optparse-applicative
     , parser-combinators
     , recursion-schemes
     , servant-client
+    , split
     , text
     , time
     , vector
