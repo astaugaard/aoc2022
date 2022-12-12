@@ -81,6 +81,6 @@ inputTest :: (Eq b, Show b) => Parser a -> (a -> b) -> String -> b -> Assertion
 inputTest pa fab s b = let po = parseOnly pa (pack s)
                        in case po of
                             Left a -> assertFailure a
-                            Right a -> assertEqual "results equal: " (fab a) b
+                            Right a -> assertEqual "results equal: " b (fab a)
                             -- Fail _ cont mes -> assertFailure (unlines cont ++ "\n" ++ mes)
 

@@ -30,6 +30,7 @@ dependencies:
 - containers
 - text
 - mtl
+- microlens-platform
 - comonad
 - comonad-extras
 - ComonadSheet
@@ -38,6 +39,8 @@ dependencies:
 - servant-client
 - advent-of-code-api
 - HUnit
+- split
+- deepseq
 
 library:
   source-dirs: src
