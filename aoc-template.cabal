@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: da465391cb9ce215bb1125ce05c214d4aa1f44518f04f220eb132015239b8f84
+-- hash: 70b915e85400f9e7d7b6b16cf106a03dcfa01d49a54c079a8342e47a78969bba
 
 name:           aoc-template
 version:        2022.0
@@ -106,6 +106,7 @@ library
   build-depends:
       ComonadSheet
     , HUnit
+    , MemoTrie
     , advent-of-code-api
     , ansi-terminal
     , array
@@ -180,6 +181,7 @@ executable aoc-template-exe
   build-depends:
       ComonadSheet
     , HUnit
+    , MemoTrie
     , advent-of-code-api
     , ansi-terminal
     , aoc-template

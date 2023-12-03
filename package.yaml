@@ -41,6 +41,7 @@ dependencies:
 - HUnit
 - split
 - deepseq
+- MemoTrie
 
 library:
   source-dirs: src
